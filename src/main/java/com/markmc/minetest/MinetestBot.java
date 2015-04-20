@@ -55,6 +55,11 @@ public class MinetestBot {
     private static byte[] PEER_ID = PEER_ID_INEXISTENT;
     public static State STATE;
 
+    /**
+     * Minetest bot.
+     * @param args command line arguments
+     * @throws Exception if something goes wrong
+     */
     public static void main(final String[] args) throws Exception {
 
         ByteBuffer data;
@@ -159,6 +164,10 @@ public class MinetestBot {
 
     }
 
+    /**
+     * Connect.
+     * @throws Exception if something goes wrong
+     */
     public static void connect() throws Exception {
         System.out.println("Client: connect");
         byte[] msg = Bytes.concat(
@@ -172,6 +181,12 @@ public class MinetestBot {
         network.send(msg);
     }
 
+    /**
+     * Acknowledge.
+     * @param channelnum byte[]
+     * @param seqnum byte[]
+     * @throws Exception if something goes wrong
+     */
     public static void acknowledge(final byte[] channelnum, final byte[] seqnum) throws Exception {
         int channel = Utils.toInteger(channelnum);
         System.out.println("Client: Ack " + Utils.toInteger(seqnum));
@@ -186,6 +201,10 @@ public class MinetestBot {
         network.send(msg);
     }
 
+    /**
+     * Disable legacy.
+     * @throws Exception if something goes wrong
+     */
     public static void disableLegacy() throws Exception {
         int channel = 0;
         System.out.println("Client: Disable Legaacy");
@@ -335,6 +354,11 @@ public class MinetestBot {
         network.send(msg);
     }
 
+    /**
+     * getReliableBytes.
+     * @param channel channel number
+     * @return byte[]
+     */
     private static byte[] getReliableBytes(final int channel) {
         byte[] msg = Bytes.concat(
                 TYPE_RELIABLE,
@@ -346,7 +370,11 @@ public class MinetestBot {
         return msg;
     }
 
-    private static void incrementSeqnum(int channel) {
+    /**
+     * incrementSeqnum.
+     * @param channel channel number
+     */
+    private static void incrementSeqnum(final int channel) {
         OUTGOING_SEQNUMS[channel]++;
         if (OUTGOING_SEQNUMS[channel] > SEQNUM_MAX) {
             OUTGOING_SEQNUMS[channel] = 0;
