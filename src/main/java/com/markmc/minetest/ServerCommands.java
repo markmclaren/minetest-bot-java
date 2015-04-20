@@ -10,7 +10,7 @@ import static com.markmc.minetest.Utils.getByteArray;
  * <p>
  * @author markmc
  */
-public class ServerCommands {
+public final class ServerCommands {
 
   private static final Map<String, byte[]> BYTES = new HashMap<String, byte[]>();
 

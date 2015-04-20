@@ -11,11 +11,15 @@ import static com.markmc.minetest.Constants.CONTROLTYPE_DISCO;
 import static com.markmc.minetest.Constants.CONTROLTYPE_ENABLE_BIG_SEND_WINDOW;
 import static com.markmc.minetest.Constants.CONTROLTYPE_PING;
 import static com.markmc.minetest.Constants.CONTROLTYPE_SET_PEER_ID;
+import static com.markmc.minetest.Constants.DEFAULT_SERVER_PORT;
 import static com.markmc.minetest.Constants.FOUR_BYTES;
+import static com.markmc.minetest.Constants.MAX_PASSWORD_SIZE;
+import static com.markmc.minetest.Constants.MAX_PLAYER_NAME_SIZE;
 import static com.markmc.minetest.Constants.ONE_BYTE;
 import static com.markmc.minetest.Constants.PEER_ID_INEXISTENT;
 import static com.markmc.minetest.Constants.PROTOCOL_ID;
 import static com.markmc.minetest.Constants.SEQNUM_INITIAL;
+import static com.markmc.minetest.Constants.SEQNUM_MAX;
 import static com.markmc.minetest.Constants.SER_FMT_VER_HIGHEST_READ;
 import static com.markmc.minetest.Constants.TWO_BYTES;
 import static com.markmc.minetest.Constants.TYPE_CONTROL;
@@ -39,7 +43,10 @@ import static com.markmc.minetest.Constants.VERSION_STRING;
  */
 public class MinetestBot {
 
-  enum State {
+  /**
+   * States enum.
+   */
+  public enum State {
 
     Invalid,
     Disconnecting,
@@ -52,15 +59,20 @@ public class MinetestBot {
 
   }
 
-  private static final NetworkIO network = new NetworkIO("192.168.1.2", 30000);
+  private static NetworkIOImpl network = new NetworkIOImpl("192.168.1.2", DEFAULT_SERVER_PORT);
 
-  private static final int SEQNUM_MAX = 65535;
+  private static int[] outgoingSeqnums
+    = new int[] { SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
 
-  public static int[] OUTGOING_SEQNUMS = new int[] {SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
+  private static byte[] peerId = PEER_ID_INEXISTENT;
 
-  private static byte[] PEER_ID = PEER_ID_INEXISTENT;
+  private static State state;
 
-  public static State STATE;
+  /**
+   * Private constructor.
+   */
+  private MinetestBot() {
+  }
 
   /**
    * Minetest bot.
@@ -73,18 +85,18 @@ public class MinetestBot {
 
     ByteBuffer data;
 
-    byte[] protocol_id;
-    byte[] sender_peer_id;
+    byte[] protocolId;
+    byte[] senderPeerId;
     int channel;
     byte[] channelBytes;
     byte[] type;
     byte[] seqnum;
     byte[] controltype;
-    byte[] peer_id_new;
+    byte[] peerIdNew;
     byte[] command;
 
-    byte[] chunk_count;
-    byte[] chunk_num;
+    byte[] chunkCount;
+    byte[] chunkNum;
 
     connect();
 
@@ -92,8 +104,8 @@ public class MinetestBot {
 
     while (pollServer) {
       // Accept connections from server
-      System.out.println("State: " + STATE);
-      if (STATE == State.Created) {
+      System.out.println("State: " + state);
+      if (state == State.Created) {
         toserverInit();
         //STATE = State.InitSent;
       }
@@ -101,8 +113,8 @@ public class MinetestBot {
       data = network.requestData();
 
       // read header
-      protocol_id = Utils.pop(data, FOUR_BYTES);
-      sender_peer_id = Utils.pop(data, TWO_BYTES);
+      protocolId = Utils.pop(data, FOUR_BYTES);
+      senderPeerId = Utils.pop(data, TWO_BYTES);
       channelBytes = Utils.pop(data, ONE_BYTE);
       channel = Utils.toInteger(channelBytes);
       // read type
@@ -126,9 +138,9 @@ public class MinetestBot {
         }
         if (Utils.isEqual(controltype, CONTROLTYPE_SET_PEER_ID)) {
           System.out.println("Server: SET_PEER_ID");
-          peer_id_new = Utils.pop(data, TWO_BYTES);
-          PEER_ID = peer_id_new;
-          STATE = State.Created;
+          peerIdNew = Utils.pop(data, TWO_BYTES);
+          peerId = peerIdNew;
+          state = State.Created;
           disableLegacy();
         }
         if (Utils.isEqual(controltype, CONTROLTYPE_PING)) {
@@ -142,7 +154,7 @@ public class MinetestBot {
         //System.out.println("Remaining data: " + data.remaining());
         command = Utils.pop(data, TWO_BYTES);
         // System.out.println(Utils.toString(command));
-        CommandHandler commandHandler = ServiceHandler.COMMAND_HANDLER.get(ByteBuffer.wrap(command));
+        CommandHandler commandHandler = ServiceHandler.CMD_HANDLER.get(ByteBuffer.wrap(command));
         System.out.println("Server: " + commandHandler.getName());
         commandHandler.run(data);
 //                System.out.println(toString(command));
@@ -159,14 +171,14 @@ public class MinetestBot {
       }
       if (Utils.isEqual(type, TYPE_SPLIT)) {
         seqnum = Utils.pop(data, TWO_BYTES);
-        chunk_count = Utils.pop(data, TWO_BYTES);
-        chunk_num = Utils.pop(data, TWO_BYTES);
+        chunkCount = Utils.pop(data, TWO_BYTES);
+        chunkNum = Utils.pop(data, TWO_BYTES);
         System.out.println(String.format("Server: Split message chunk %s/%s", 1 + Utils.toInteger(
-                                         chunk_num), Utils.toInteger(chunk_count)));
-        if (0 == Utils.toInteger(chunk_num)) {
+                                         chunkNum), Utils.toInteger(chunkCount)));
+        if (0 == Utils.toInteger(chunkNum)) {
           command = Utils.pop(data, TWO_BYTES);
           // System.out.println(Utils.toString(command));
-          CommandHandler commandHandler = ServiceHandler.COMMAND_HANDLER.get(ByteBuffer.wrap(command));
+          CommandHandler commandHandler = ServiceHandler.CMD_HANDLER.get(ByteBuffer.wrap(command));
           //System.out.println(commandHandler.getName());
         }
       }
@@ -181,13 +193,12 @@ public class MinetestBot {
    */
   public static void connect() throws Exception {
     System.out.println("Client: connect");
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID,
-      PEER_ID,
-      Utils.u8(0),
-      TYPE_RELIABLE,
-      Utils.u16(OUTGOING_SEQNUMS[0]),
-      TYPE_ORIGINAL
+    byte[] msg = Bytes.concat(PROTOCOL_ID,
+                              peerId,
+                              Utils.u8(0),
+                              TYPE_RELIABLE,
+                              Utils.u16(outgoingSeqnums[0]),
+                              TYPE_ORIGINAL
     );
     network.send(msg);
   }
@@ -203,13 +214,12 @@ public class MinetestBot {
   public static void acknowledge(final byte[] channelnum, final byte[] seqnum) throws Exception {
     int channel = Utils.toInteger(channelnum);
     System.out.println("Client: Ack " + Utils.toInteger(seqnum));
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID,
-      PEER_ID,
-      channelnum,
-      TYPE_CONTROL,
-      CONTROLTYPE_ACK,
-      seqnum
+    byte[] msg = Bytes.concat(PROTOCOL_ID,
+                              peerId,
+                              channelnum,
+                              TYPE_CONTROL,
+                              CONTROLTYPE_ACK,
+                              seqnum
     );
     network.send(msg);
   }
@@ -222,14 +232,13 @@ public class MinetestBot {
   public static void disableLegacy() throws Exception {
     int channel = 0;
     System.out.println("Client: Disable Legaacy");
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID,
-      PEER_ID,
-      Utils.u8(channel),
-      TYPE_RELIABLE,
-      Utils.u16(OUTGOING_SEQNUMS[channel]),
-      TYPE_CONTROL,
-      CONTROLTYPE_ENABLE_BIG_SEND_WINDOW
+    byte[] msg = Bytes.concat(PROTOCOL_ID,
+                              peerId,
+                              Utils.u8(channel),
+                              TYPE_RELIABLE,
+                              Utils.u16(outgoingSeqnums[channel]),
+                              TYPE_CONTROL,
+                              CONTROLTYPE_ENABLE_BIG_SEND_WINDOW
     );
     incrementSeqnum(channel);
     network.send(msg);
@@ -238,7 +247,7 @@ public class MinetestBot {
   // TOSERVER_INIT_LEGACY
   // [0] u16 TOSERVER_INIT
   // [2] u8 SER_FMT_VER_HIGHEST_READ
-  // [3] u8[20] player_name
+  // [3] u8[20] playerName
   // [23] u8[28] password (new in some version)
   // [51] u16 minimum supported network protocol version (added sometime)
   // [53] u16 maximum supported network protocol version (added later than the previous one)
@@ -254,19 +263,18 @@ public class MinetestBot {
     String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
     System.out.println("Client: INIT " + reliable);
     //
-    String player_name = "minetest-bot";
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID, // 4
-      PEER_ID, // 2
-      command.getChannelBytes(), // channel, 1
-      reliableBytes,
-      TYPE_ORIGINAL, // 1
-      command.getCommandBytes(), // command, 2
-      SER_FMT_VER_HIGHEST_READ, // 1
-      Utils.makeByteArray(player_name.getBytes(), 20), // 20
-      Utils.makeByteArray("".getBytes(), 28), // 28
-      CLIENT_PROTOCOL_VERSION_MIN, // 2
-      CLIENT_PROTOCOL_VERSION_MAX // 2
+    String playerName = "minetest-bot";
+    byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
+                              peerId, // 2
+                              command.getChannelBytes(), // channel, 1
+                              reliableBytes,
+                              TYPE_ORIGINAL, // 1
+                              command.getCommandBytes(), // command, 2
+                              SER_FMT_VER_HIGHEST_READ, // 1
+                              Utils.makeByteArray(playerName.getBytes(), MAX_PLAYER_NAME_SIZE), // 20
+                              Utils.makeByteArray("".getBytes(), MAX_PASSWORD_SIZE), // 28
+                              CLIENT_PROTOCOL_VERSION_MIN, // 2
+                              CLIENT_PROTOCOL_VERSION_MAX // 2
     );
     network.send(msg);
   }
@@ -288,13 +296,12 @@ public class MinetestBot {
     String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
     System.out.println("Client: INIT2 " + reliable);
     //
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID, // 4
-      PEER_ID, // 2
-      command.getChannelBytes(), // channel, 1
-      reliableBytes,
-      TYPE_ORIGINAL, // 1
-      command.getCommandBytes() // command, 2
+    byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
+                              peerId, // 2
+                              command.getChannelBytes(), // channel, 1
+                              reliableBytes,
+                              TYPE_ORIGINAL, // 1
+                              command.getCommandBytes() // command, 2
     );
     network.send(msg);
   }
@@ -310,16 +317,20 @@ public class MinetestBot {
       reliableBytes = getReliableBytes(channel);
     }
     //
-    String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
+    String reliable;
+    if (command.isReliable()) {
+      reliable = "(rel)";
+    } else {
+      reliable = "(unrel)";
+    }
     System.out.println("Client: RECEIVED_MEDIA " + reliable);
     //
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID, // 4
-      PEER_ID, // 2
-      command.getChannelBytes(), // channel, 1
-      reliableBytes,
-      TYPE_ORIGINAL, // 1
-      command.getCommandBytes()
+    byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
+                              peerId, // 2
+                              command.getChannelBytes(), // channel, 1
+                              reliableBytes,
+                              TYPE_ORIGINAL, // 1
+                              command.getCommandBytes()
     );
     network.send(msg);
   }
@@ -343,19 +354,18 @@ public class MinetestBot {
     String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
     System.out.println("Client: CLIENT_READY " + reliable);
     //
-    byte[] msg = Bytes.concat(
-      PROTOCOL_ID, // 4
-      PEER_ID, // 2
-      command.getChannelBytes(), // channel, 0
-      reliableBytes,
-      TYPE_ORIGINAL, // 1
-      command.getCommandBytes(),
-      Utils.u8(VERSION_MAJOR),
-      Utils.u8(VERSION_MINOR),
-      Utils.u8(VERSION_PATCH),
-      Utils.u8(0),
-      Utils.u16(VERSION_STRING.length()),
-      Utils.makeByteArray(VERSION_STRING.getBytes(), VERSION_STRING.length())
+    byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
+                              peerId, // 2
+                              command.getChannelBytes(), // channel, 0
+                              reliableBytes,
+                              TYPE_ORIGINAL, // 1
+                              command.getCommandBytes(),
+                              Utils.u8(VERSION_MAJOR),
+                              Utils.u8(VERSION_MINOR),
+                              Utils.u8(VERSION_PATCH),
+                              Utils.u8(0),
+                              Utils.u16(VERSION_STRING.length()),
+                              Utils.makeByteArray(VERSION_STRING.getBytes(), VERSION_STRING.length())
     );
     network.send(msg);
   }
@@ -368,11 +378,10 @@ public class MinetestBot {
    * @return byte[]
    */
   private static byte[] getReliableBytes(final int channel) {
-    byte[] msg = Bytes.concat(
-      TYPE_RELIABLE,
-      Utils.u16(OUTGOING_SEQNUMS[channel])
+    byte[] msg = Bytes.concat(TYPE_RELIABLE,
+                              Utils.u16(outgoingSeqnums[channel])
     );
-    if (!Utils.isEqual(PEER_ID, PEER_ID_INEXISTENT)) {
+    if (!Utils.isEqual(peerId, PEER_ID_INEXISTENT)) {
       incrementSeqnum(channel);
     }
     return msg;
@@ -384,11 +393,17 @@ public class MinetestBot {
    * @param channel channel number
    */
   private static void incrementSeqnum(final int channel) {
-    OUTGOING_SEQNUMS[channel]++;
-    if (OUTGOING_SEQNUMS[channel] > SEQNUM_MAX) {
-      OUTGOING_SEQNUMS[channel] = 0;
+    outgoingSeqnums[channel]++;
+    if (outgoingSeqnums[channel] > SEQNUM_MAX) {
+      outgoingSeqnums[channel] = 0;
     }
-    // System.out.println(String.format("OUTGOING_SEQNUMS[%s] increased to %s", channel, OUTGOING_SEQNUMS[channel]));
+  }
+
+  /*
+   * setState.
+   */
+  public static void setState(final State instate) {
+    state = instate;
   }
 
 }

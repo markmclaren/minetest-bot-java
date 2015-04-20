@@ -21,7 +21,17 @@ public final class Constants {
 
   public static final int FOUR_BYTES = 4;
 
+  public static final int EIGHT_BYTES = 8;
+
+  public static final int SEQNUM_MAX = 65535;
+
   public static final int SEQNUM_INITIAL = 65500;
+
+  public static final int MAX_PLAYER_NAME_SIZE = 20;
+
+  public static final int MAX_PASSWORD_SIZE = 28;
+
+  public static final int DEFAULT_SERVER_PORT = 30000;
 
   public static final byte[] PROTOCOL_ID = getByteArray("4f457403");
 
@@ -43,7 +53,8 @@ public final class Constants {
 
   public static final byte[] CONTROLTYPE_DISCO = getByteArray("03");
 
-  public static final byte[] CONTROLTYPE_ENABLE_BIG_SEND_WINDOW = getByteArray("04");
+  public static final byte[] CONTROLTYPE_ENABLE_BIG_SEND_WINDOW
+    = getByteArray("04");
 
   public static final byte[] SER_FMT_VER_HIGHEST_READ = u8(26);
 
@@ -51,7 +62,8 @@ public final class Constants {
 
   public static final byte[] CLIENT_PROTOCOL_VERSION_MIN = u16(13);
 
-  public static final byte[] CLIENT_PROTOCOL_VERSION_MAX = LATEST_PROTOCOL_VERSION;
+  public static final byte[] CLIENT_PROTOCOL_VERSION_MAX
+    = LATEST_PROTOCOL_VERSION;
 
   public static final int VERSION_MAJOR = 0;
 
@@ -59,12 +71,15 @@ public final class Constants {
 
   public static final int VERSION_PATCH = 12;
 
-  public static final String VERSION_STRING = String.format("%s.%s.%s-Minetest-Bot", VERSION_MAJOR,
-                                                            VERSION_MINOR, VERSION_PATCH);
+  public static final String VERSION_STRING
+    = String.format("%s.%s.%s-Minetest-Bot", VERSION_MAJOR,
+                    VERSION_MINOR, VERSION_PATCH);
 
-  public static final Map<ByteBuffer, String> TYPES = new HashMap<ByteBuffer, String>();
+  public static final Map<ByteBuffer, String> TYPES
+    = new HashMap<ByteBuffer, String>();
 
-  public static final Map<ByteBuffer, String> CONTROLTYPES = new HashMap<ByteBuffer, String>();
+  public static final Map<ByteBuffer, String> CONTROLTYPES
+    = new HashMap<ByteBuffer, String>();
 
   static {
     TYPES.put(ByteBuffer.wrap(TYPE_RELIABLE), "TYPE_RELIABLE");
@@ -72,10 +87,14 @@ public final class Constants {
     TYPES.put(ByteBuffer.wrap(TYPE_CONTROL), "TYPE_CONTROL");
     TYPES.put(ByteBuffer.wrap(TYPE_SPLIT), "TYPE_SPLIT");
 
-    CONTROLTYPES.put(ByteBuffer.wrap(CONTROLTYPE_ACK), "CONTROLTYPE_ACK");
-    CONTROLTYPES.put(ByteBuffer.wrap(CONTROLTYPE_SET_PEER_ID), "CONTROLTYPE_SET_PEER_ID");
-    CONTROLTYPES.put(ByteBuffer.wrap(CONTROLTYPE_PING), "CONTROLTYPE_PING");
-    CONTROLTYPES.put(ByteBuffer.wrap(CONTROLTYPE_DISCO), "CONTROLTYPE_DISCO");
+    CONTROLTYPES.put(
+      ByteBuffer.wrap(CONTROLTYPE_ACK), "CONTROLTYPE_ACK");
+    CONTROLTYPES.put(
+      ByteBuffer.wrap(CONTROLTYPE_SET_PEER_ID), "CONTROLTYPE_SET_PEER_ID");
+    CONTROLTYPES.put(
+      ByteBuffer.wrap(CONTROLTYPE_PING), "CONTROLTYPE_PING");
+    CONTROLTYPES.put(
+      ByteBuffer.wrap(CONTROLTYPE_DISCO), "CONTROLTYPE_DISCO");
   }
 
   /**

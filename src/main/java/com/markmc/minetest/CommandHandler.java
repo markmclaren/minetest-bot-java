@@ -19,7 +19,7 @@ public interface CommandHandler {
   /**
    * run. Method that processes the data returned by this command.
    * <p>
-   * @param data
+   * @param data ByteBuffer
    */
   void run(ByteBuffer data);
 
