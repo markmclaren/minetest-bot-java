@@ -59,10 +59,10 @@ public class MinetestBot {
 
   }
 
-  private static NetworkIOImpl network = new NetworkIOImpl("192.168.1.2", DEFAULT_SERVER_PORT);
+  private static NetworkIO network = new NetworkIO("192.168.1.2", DEFAULT_SERVER_PORT);
 
   private static int[] outgoingSeqnums
-    = new int[] { SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
+    = new int[] {SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
 
   private static byte[] peerId = PEER_ID_INEXISTENT;
 
@@ -251,6 +251,10 @@ public class MinetestBot {
   // [23] u8[28] password (new in some version)
   // [51] u16 minimum supported network protocol version (added sometime)
   // [53] u16 maximum supported network protocol version (added later than the previous one)
+  /**
+   * toserverInit.
+   * @throws Exception
+   */
   public static void toserverInit() throws Exception {
     ServerCommand command = ServerCommands.getServerCommand(
       ServerCommands.TOSERVER_INIT_LEGACY);
@@ -260,8 +264,8 @@ public class MinetestBot {
       reliableBytes = getReliableBytes(channel);
     }
     //
-    String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
-    System.out.println("Client: INIT " + reliable);
+    System.out.println("Client: INIT "
+      + getReliableLabel(command.isReliable()));
     //
     String playerName = "minetest-bot";
     byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
@@ -284,6 +288,9 @@ public class MinetestBot {
   // After this, the server can send data.
   //
   // [0] u16 TOSERVER_INIT2
+  /**
+   * toserverInit2.
+   */
   public static void toserverInit2() {
     ServerCommand command = ServerCommands.getServerCommand(
       ServerCommands.TOSERVER_INIT2);
@@ -293,8 +300,8 @@ public class MinetestBot {
       reliableBytes = getReliableBytes(channel);
     }
     //
-    String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
-    System.out.println("Client: INIT2 " + reliable);
+    System.out.println("Client: INIT2 "
+      + getReliableLabel(command.isReliable()));
     //
     byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
                               peerId, // 2
@@ -308,6 +315,9 @@ public class MinetestBot {
 
   // TOSERVER_RECEIVED_MEDIA
   // u16 command
+  /**
+   * toserverMediaRecieved.
+   */
   public static void toserverMediaRecieved() {
     ServerCommand command = ServerCommands.getServerCommand(
       ServerCommands.TOSERVER_RECEIVED_MEDIA);
@@ -317,13 +327,8 @@ public class MinetestBot {
       reliableBytes = getReliableBytes(channel);
     }
     //
-    String reliable;
-    if (command.isReliable()) {
-      reliable = "(rel)";
-    } else {
-      reliable = "(unrel)";
-    }
-    System.out.println("Client: RECEIVED_MEDIA " + reliable);
+    System.out.println("Client: RECEIVED_MEDIA "
+      + getReliableLabel(command.isReliable()));
     //
     byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
                               peerId, // 2
@@ -342,6 +347,9 @@ public class MinetestBot {
   // u8 reserved
   // u16 len
   // u8[len] full_version_string
+  /**
+   * toserverClientReady.
+   */
   public static void toserverClientReady() {
     ServerCommand command = ServerCommands.getServerCommand(
       ServerCommands.TOSERVER_CLIENT_READY);
@@ -351,8 +359,8 @@ public class MinetestBot {
       reliableBytes = getReliableBytes(channel);
     }
     //
-    String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
-    System.out.println("Client: CLIENT_READY " + reliable);
+    System.out.println("Client: CLIENT_READY "
+      + getReliableLabel(command.isReliable()));
     //
     byte[] msg = Bytes.concat(PROTOCOL_ID, // 4
                               peerId, // 2
@@ -397,6 +405,21 @@ public class MinetestBot {
     if (outgoingSeqnums[channel] > SEQNUM_MAX) {
       outgoingSeqnums[channel] = 0;
     }
+  }
+
+  /**
+   * getReliableLabel.
+   * @param isReliable if command is reliable
+   * @return String
+   */
+  private static String getReliableLabel(final boolean isReliable) {
+    String reliable;
+    if (isReliable) {
+      reliable = "(rel)";
+    } else {
+      reliable = "(unrel)";
+    }
+    return reliable;
   }
 
   /*

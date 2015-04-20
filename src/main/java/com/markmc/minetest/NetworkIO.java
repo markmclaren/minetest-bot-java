@@ -1,13 +1,48 @@
 package com.markmc.minetest;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 /**
- * NetworkIO interface.
- * @author Mark McLaren (mark.mclaren@bristol.ac.uk)
+ * NetworkIO.
+ * <p>
+ * @author markmc
  */
-public interface NetworkIO {
+public final class NetworkIO {
+
+  private static final int RECEIVED_BUFFER_SIZE = 1024;
+
+  private static final int TIMEOUT = 10 * 1000;
+
+  private String host;
+
+  private int port;
+
+  private DatagramSocket socket;
+
+  private byte[] receiveData;
+
+  private DatagramPacket receivePacket;
+
+  /**
+   * NetworkIO constructor.
+   * <p>
+   * @param inhost host
+   * @param inport port
+   */
+  public NetworkIO(final String inhost, final int inport) {
+    this.host = inhost;
+    this.port = inport;
+    try {
+      this.socket = new DatagramSocket();
+    } catch (SocketException ex) {
+    }
+  }
 
   /**
    * requestData.
@@ -16,14 +51,30 @@ public interface NetworkIO {
    * <p>
    * @throws IOException if something goes wrong
    */
-  ByteBuffer requestData() throws IOException;
+  public ByteBuffer requestData() throws IOException {
+    receiveData = new byte[RECEIVED_BUFFER_SIZE];
+    receivePacket = new DatagramPacket(receiveData, receiveData.length);
+    socket.receive(receivePacket);
+    return ByteBuffer.wrap(receivePacket.getData(), receivePacket.getOffset(),
+                           receivePacket.getLength());
+  }
 
   /**
    * send.
    * <p>
    * @param msg byte[]
    */
-  void send(final byte[] msg);
+  public void send(final byte[] msg) {
+    try {
+      InetAddress address = InetAddress.getByName(host);
+      DatagramPacket request = new DatagramPacket(
+        msg, msg.length, address, port);
+      socket.setSoTimeout(TIMEOUT);
+      socket.send(request);
+    } catch (UnknownHostException ex) {
+    } catch (SocketException ex) {
+    } catch (IOException ex) {
+    }
+  }
 
 }
-
