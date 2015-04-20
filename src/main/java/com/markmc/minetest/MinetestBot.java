@@ -164,9 +164,9 @@ public class MinetestBot {
         byte[] msg = Bytes.concat(
                 PROTOCOL_ID,
                 PEER_ID,
-                Utils.U8(0),
+                Utils.u8(0),
                 TYPE_RELIABLE,
-                Utils.U16(OUTGOING_SEQNUMS[0]),
+                Utils.u16(OUTGOING_SEQNUMS[0]),
                 TYPE_ORIGINAL
         );
         network.send(msg);
@@ -192,9 +192,9 @@ public class MinetestBot {
         byte[] msg = Bytes.concat(
                 PROTOCOL_ID,
                 PEER_ID,
-                Utils.U8(channel),
+                Utils.u8(channel),
                 TYPE_RELIABLE,
-                Utils.U16(OUTGOING_SEQNUMS[channel]),
+                Utils.u16(OUTGOING_SEQNUMS[channel]),
                 TYPE_CONTROL,
                 CONTROLTYPE_ENABLE_BIG_SEND_WINDOW
         );
@@ -325,11 +325,11 @@ public class MinetestBot {
                 reliableBytes,
                 TYPE_ORIGINAL, // 1
                 command.getCommandBytes(),
-                Utils.U8(VERSION_MAJOR),
-                Utils.U8(VERSION_MINOR),
-                Utils.U8(VERSION_PATCH),
-                Utils.U8(0),
-                Utils.U16(VERSION_STRING.length()),
+                Utils.u8(VERSION_MAJOR),
+                Utils.u8(VERSION_MINOR),
+                Utils.u8(VERSION_PATCH),
+                Utils.u8(0),
+                Utils.u16(VERSION_STRING.length()),
                 Utils.makeByteArray(VERSION_STRING.getBytes(), VERSION_STRING.length())
         );
         network.send(msg);
@@ -338,7 +338,7 @@ public class MinetestBot {
     private static byte[] getReliableBytes(final int channel) {
         byte[] msg = Bytes.concat(
                 TYPE_RELIABLE,
-                Utils.U16(OUTGOING_SEQNUMS[channel])
+                Utils.u16(OUTGOING_SEQNUMS[channel])
         );
         if (!Utils.isEqual(PEER_ID, PEER_ID_INEXISTENT)) {
             incrementSeqnum(channel);

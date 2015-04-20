@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.markmc.minetest.Utils.U16;
-import static com.markmc.minetest.Utils.U8;
+import static com.markmc.minetest.Utils.u16;
+import static com.markmc.minetest.Utils.u8;
 import static com.markmc.minetest.Utils.getByteArray;
 
 /**
@@ -39,11 +39,11 @@ public class Constants {
 
   public static final byte[] CONTROLTYPE_ENABLE_BIG_SEND_WINDOW = getByteArray("04");
 
-  public static final byte[] SER_FMT_VER_HIGHEST_READ = U8(26);
+  public static final byte[] SER_FMT_VER_HIGHEST_READ = u8(26);
 
-  public static final byte[] LATEST_PROTOCOL_VERSION = U16(24);
+  public static final byte[] LATEST_PROTOCOL_VERSION = u16(24);
 
-  public static final byte[] CLIENT_PROTOCOL_VERSION_MIN = U16(13);
+  public static final byte[] CLIENT_PROTOCOL_VERSION_MIN = u16(13);
 
   public static final byte[] CLIENT_PROTOCOL_VERSION_MAX = LATEST_PROTOCOL_VERSION;
 

@@ -14,12 +14,23 @@ import org.apache.commons.codec.binary.Hex;
  */
 public class Utils {
 
+  private static final int ONE_BYTE = 1;
+  private static final int TWO_BYTES = 2;
+  private static final int FOUR_BYTES = 4;
+  private static final int BASE16 = 16;
+
+  /**
+   * Private constructor.
+   */
+  private Utils(){
+  }
+
   /**
    * toFloat.
    * <p>
    * @param b byte[]
    * <p>
-   * @return
+   * @return float
    */
   public static float toFloat(final byte[] b) {
     return ByteBuffer.wrap(b).getFloat();
@@ -28,9 +39,9 @@ public class Utils {
   /**
    * getByteBuffer.
    * <p>
-   * @param hex
+   * @param hex String
    * <p>
-   * @return
+   * @return ByteBuffer
    */
   public static ByteBuffer getByteBuffer(final String hex) {
     try {
@@ -46,7 +57,7 @@ public class Utils {
    * <p>
    * @param b byte[]
    * <p>
-   * @return
+   * @return String
    */
   public static String toString(final byte[] b) {
     return Hex.encodeHexString(b);
@@ -57,10 +68,10 @@ public class Utils {
    * <p>
    * @param b byte[]
    * <p>
-   * @return
+   * @return int
    */
   public static int toInteger(final byte[] b) {
-    return new BigInteger(BaseEncoding.base16().encode(b), 16).intValue();
+    return new BigInteger(BaseEncoding.base16().encode(b), BASE16).intValue();
   }
 
   /**
@@ -69,7 +80,7 @@ public class Utils {
    * @param b1 byte[]
    * @param b2 byte[]
    * <p>
-   * @return
+   * @return if byte arrays are equal
    */
   public static boolean isEqual(final byte[] b1, final byte[] b2) {
     return ByteBuffer.wrap(b1).equals(ByteBuffer.wrap(b2));
@@ -81,7 +92,7 @@ public class Utils {
    * @param v    byte[]
    * @param size size
    * <p>
-   * @return
+   * @return byte[]
    */
   public static byte[] makeByteArray(final byte[] v, final int size) {
     return ByteBuffer.allocate(size).put(v).array();
@@ -90,9 +101,9 @@ public class Utils {
   /**
    * getByteArray.
    * <p>
-   * @param hex
+   * @param hex String
    * <p>
-   * @return
+   * @return byte[]
    */
   public static byte[] getByteArray(final String hex) {
     try {
@@ -105,10 +116,10 @@ public class Utils {
   /**
    * pop.
    * <p>
-   * @param bbuff
-   * @param pop
+   * @param bbuff ByteBuffer
+   * @param pop int
    * <p>
-   * @return
+   * @return byte[]
    */
   public static byte[] pop(final ByteBuffer bbuff, final int pop) {
     byte[] dest = new byte[pop];
@@ -119,34 +130,34 @@ public class Utils {
   /**
    * U8 = 1 byte.
    * <p>
-   * @param v
+   * @param v int
    * <p>
-   * @return
+   * @return byte[]
    */
-  public static byte[] U8(final int v) {
-    return ByteBuffer.allocate(1).put((byte) v).array();
+  public static byte[] u8(final int v) {
+    return ByteBuffer.allocate(ONE_BYTE).put((byte) v).array();
   }
 
   /**
    * U16 = 2 bytes.
    * <p>
-   * @param v
+   * @param v int
    * <p>
-   * @return
+   * @return byte[]
    */
-  public static byte[] U16(final int v) {
-    return ByteBuffer.allocate(2).putShort((short) v).array();
+  public static byte[] u16(final int v) {
+    return ByteBuffer.allocate(TWO_BYTES).putShort((short) v).array();
   }
 
   /**
    * U32 = 4 bytes.
    * <p>
-   * @param v
+   * @param v int
    * <p>
-   * @return
+   * @return byte[]
    */
-  public static byte[] U32(final int v) {
-    return ByteBuffer.allocate(4).putInt(v).array();
+  public static byte[] u32(final int v) {
+    return ByteBuffer.allocate(FOUR_BYTES).putInt(v).array();
   }
 
 }

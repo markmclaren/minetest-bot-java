@@ -15,9 +15,13 @@ import java.nio.ByteBuffer;
  */
 public class NetworkIO {
 
-  private final String host;
+  private final static int RECEIVED_BUFFER_SIZE = 1024;
 
-  private final int port;
+  private final static int TIMEOUT = 10 * 1000;
+
+  private String host;
+
+  private int port;
 
   private DatagramSocket socket;
 
@@ -48,7 +52,7 @@ public class NetworkIO {
    * @throws IOException if something goes wrong
    */
   public ByteBuffer requestData() throws IOException {
-    receiveData = new byte[1024];
+    receiveData = new byte[RECEIVED_BUFFER_SIZE];
     receivePacket = new DatagramPacket(receiveData, receiveData.length);
     socket.receive(receivePacket);
     return ByteBuffer.wrap(receivePacket.getData(), receivePacket.getOffset(),
@@ -65,7 +69,7 @@ public class NetworkIO {
       InetAddress address = InetAddress.getByName(host);
       DatagramPacket request = new DatagramPacket(
         msg, msg.length, address, port);
-      socket.setSoTimeout(10 * 1000);
+      socket.setSoTimeout(TIMEOUT);
       socket.send(request);
     } catch (UnknownHostException ex) {
     } catch (SocketException ex) {
