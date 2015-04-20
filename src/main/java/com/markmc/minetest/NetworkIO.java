@@ -36,7 +36,7 @@ public class NetworkIO {
         return ByteBuffer.wrap(receivePacket.getData(), receivePacket.getOffset(), receivePacket.getLength());
     }
 
-    public void send(byte[] msg) {
+    public void send(final byte[] msg) {
         try {
             InetAddress address = InetAddress.getByName(host);
             DatagramPacket request = new DatagramPacket(

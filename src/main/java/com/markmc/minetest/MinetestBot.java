@@ -1,6 +1,9 @@
 package com.markmc.minetest;
 
+import java.nio.ByteBuffer;
+
 import com.google.common.primitives.Bytes;
+
 import static com.markmc.minetest.Constants.CLIENT_PROTOCOL_VERSION_MAX;
 import static com.markmc.minetest.Constants.CLIENT_PROTOCOL_VERSION_MIN;
 import static com.markmc.minetest.Constants.CONTROLTYPE_ACK;
@@ -20,7 +23,6 @@ import static com.markmc.minetest.Constants.VERSION_MAJOR;
 import static com.markmc.minetest.Constants.VERSION_MINOR;
 import static com.markmc.minetest.Constants.VERSION_PATCH;
 import static com.markmc.minetest.Constants.VERSION_STRING;
-import java.nio.ByteBuffer;
 
 // https://systembash.com/a-simple-java-udp-server-and-udp-client/
 // http://dev.minetest.net/Network_Protocol
@@ -53,7 +55,7 @@ public class MinetestBot {
     private static byte[] PEER_ID = PEER_ID_INEXISTENT;
     public static State STATE;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 
         ByteBuffer data;
 
@@ -71,7 +73,7 @@ public class MinetestBot {
         byte[] chunk_num;
 
         connect();
-        
+
         boolean pollServer = Boolean.TRUE;
 
         while (pollServer) {
@@ -81,7 +83,7 @@ public class MinetestBot {
                 toserverInit();
                 //STATE = State.InitSent;
             }
-            // 
+            //
             data = network.requestData();
 
             // read header
@@ -89,7 +91,7 @@ public class MinetestBot {
             sender_peer_id = Utils.pop(data, 2);
             channelBytes = Utils.pop(data, 1);
             channel = Utils.toInteger(channelBytes);
-            // read type 
+            // read type
             type = Utils.pop(data, 1);
             //System.out.println(TYPES.get(ByteBuffer.wrap(type)));
             if (Utils.isEqual(type, TYPE_RELIABLE)) {
@@ -170,7 +172,7 @@ public class MinetestBot {
         network.send(msg);
     }
 
-    public static void acknowledge(byte[] channelnum, byte[] seqnum) throws Exception {
+    public static void acknowledge(final byte[] channelnum, final byte[] seqnum) throws Exception {
         int channel = Utils.toInteger(channelnum);
         System.out.println("Client: Ack " + Utils.toInteger(seqnum));
         byte[] msg = Bytes.concat(
@@ -207,7 +209,7 @@ public class MinetestBot {
      [3] u8[20] player_name
      [23] u8[28] password (new in some version)
      [51] u16 minimum supported network protocol version (added sometime)
-     [53] u16 maximum supported network protocol version (added later than the previous one)    
+     [53] u16 maximum supported network protocol version (added later than the previous one)
      */
     public static void toserverInit() throws Exception {
         ServerCommand command = ServerCommands.getServerCommand(
@@ -242,8 +244,8 @@ public class MinetestBot {
      TOSERVER_INIT2
      Sent as an ACK for TOCLIENT_INIT.
      After this, the server can send data.
-    
-     [0] u16 TOSERVER_INIT2    
+
+     [0] u16 TOSERVER_INIT2
      */
     public static void toserverInit2() {
         ServerCommand command = ServerCommands.getServerCommand(
@@ -270,7 +272,7 @@ public class MinetestBot {
 
     /*
      TOSERVER_RECEIVED_MEDIA
-     u16 command    
+     u16 command
      */
     public static void toserverMediaRecieved() {
         ServerCommand command = ServerCommands.getServerCommand(
@@ -315,7 +317,7 @@ public class MinetestBot {
         //
         String reliable = (command.isReliable() ? "(rel)" : "(unrel)");
         System.out.println("Client: CLIENT_READY " + reliable);
-        //        
+        //
         byte[] msg = Bytes.concat(
                 PROTOCOL_ID, // 4
                 PEER_ID, // 2

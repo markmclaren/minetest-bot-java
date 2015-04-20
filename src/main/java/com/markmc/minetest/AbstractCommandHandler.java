@@ -10,7 +10,7 @@ public abstract class AbstractCommandHandler implements CommandHandler{
 
   public abstract String getName();
 
-  public void run(ByteBuffer data) {
+  public void run(final ByteBuffer data) {
     // do nothing
   }
 

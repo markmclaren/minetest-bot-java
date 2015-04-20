@@ -48,7 +48,7 @@ public class ServiceHandler {
             }
 
             @Override
-            public void run(ByteBuffer data) {
+            public void run(final ByteBuffer data) {
                 if (!init2Sent) {
                     byte[] version = Utils.pop(data, 1);
                     byte[] pos_x = Utils.pop(data, 2);
@@ -95,7 +95,7 @@ public class ServiceHandler {
             }
 
             @Override
-            public void run(ByteBuffer data) {
+            public void run(final ByteBuffer data) {
                 byte[] time = Utils.pop(data, 2);
                 byte[] time_speed = Utils.pop(data, 4);
                 if (!receivedMediaSent) {
@@ -117,7 +117,7 @@ public class ServiceHandler {
             }
 
             @Override
-            public void run(ByteBuffer data) {
+            public void run(final ByteBuffer data) {
                 byte[] length = Utils.pop(data, 2);
                 int size = Utils.toInteger(length);
                 size = size * 2; // 2 bytes per character
@@ -155,7 +155,7 @@ public class ServiceHandler {
             }
 
             @Override
-            public void run(ByteBuffer data) {
+            public void run(final ByteBuffer data) {
                 byte[] pos_x = Utils.pop(data, 2);
                 byte[] pos_y = Utils.pop(data, 2);
                 byte[] pos_z = Utils.pop(data, 2);
