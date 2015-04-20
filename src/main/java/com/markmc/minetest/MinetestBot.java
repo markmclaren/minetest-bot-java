@@ -30,7 +30,7 @@ import static com.markmc.minetest.Constants.VERSION_STRING;
 // https://github.com/rarkenin/minetest-bot-php
 // http://dev.minetest.net/Core_Architecture
 /**
- *
+ * MinetestBot.
  * @author markmc
  */
 public class MinetestBot {
