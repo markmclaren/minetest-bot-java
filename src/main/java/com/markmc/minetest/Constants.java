@@ -15,6 +15,12 @@ import static com.markmc.minetest.Utils.u8;
  */
 public final class Constants {
 
+  public static final int ONE_BYTE = 1;
+
+  public static final int TWO_BYTES = 2;
+
+  public static final int FOUR_BYTES = 4;
+
   public static final int SEQNUM_INITIAL = 65500;
 
   public static final byte[] PROTOCOL_ID = getByteArray("4f457403");

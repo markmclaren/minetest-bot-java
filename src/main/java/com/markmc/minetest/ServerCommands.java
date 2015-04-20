@@ -185,4 +185,10 @@ public class ServerCommands {
     };
   }
 
+  /**
+   * Private constructor.
+   */
+  private ServerCommands() {
+  }
+
 }

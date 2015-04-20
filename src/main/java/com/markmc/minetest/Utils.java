@@ -7,6 +7,10 @@ import com.google.common.io.BaseEncoding;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+import static com.markmc.minetest.Constants.FOUR_BYTES;
+import static com.markmc.minetest.Constants.ONE_BYTE;
+import static com.markmc.minetest.Constants.TWO_BYTES;
+
 /**
  * Utils.
  * <p>
@@ -14,15 +18,12 @@ import org.apache.commons.codec.binary.Hex;
  */
 public final class Utils {
 
-  private static final int ONE_BYTE = 1;
-  private static final int TWO_BYTES = 2;
-  private static final int FOUR_BYTES = 4;
   private static final int BASE16 = 16;
 
   /**
    * Private constructor.
    */
-  private Utils(){
+  private Utils() {
   }
 
   /**

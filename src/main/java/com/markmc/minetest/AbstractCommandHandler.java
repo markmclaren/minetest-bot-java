@@ -19,7 +19,7 @@ public abstract class AbstractCommandHandler implements CommandHandler {
   /**
    * run. Method that processes the data returned by this command.
    * <p>
-   * @param data
+   * @param data ByteBuffer
    */
   public void run(final ByteBuffer data) {
     // do nothing
