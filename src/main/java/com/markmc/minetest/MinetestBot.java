@@ -62,7 +62,7 @@ public class MinetestBot {
   private static NetworkIO network = new NetworkIO("192.168.1.2", DEFAULT_SERVER_PORT);
 
   private static int[] outgoingSeqnums
-    = new int[] {SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
+    = new int[] { SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
 
   private static byte[] peerId = PEER_ID_INEXISTENT;
 
@@ -253,7 +253,8 @@ public class MinetestBot {
   // [53] u16 maximum supported network protocol version (added later than the previous one)
   /**
    * toserverInit.
-   * @throws Exception
+   * <p>
+   * @throws Exception if something goes wrong
    */
   public static void toserverInit() throws Exception {
     ServerCommand command = ServerCommands.getServerCommand(
@@ -409,7 +410,9 @@ public class MinetestBot {
 
   /**
    * getReliableLabel.
+   * <p>
    * @param isReliable if command is reliable
+   * <p>
    * @return String
    */
   private static String getReliableLabel(final boolean isReliable) {
@@ -422,8 +425,10 @@ public class MinetestBot {
     return reliable;
   }
 
-  /*
+  /**
    * setState.
+   * <p>
+   * @param instate State
    */
   public static void setState(final State instate) {
     state = instate;

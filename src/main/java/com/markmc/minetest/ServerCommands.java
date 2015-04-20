@@ -12,64 +12,154 @@ import static com.markmc.minetest.Utils.getByteArray;
  */
 public final class ServerCommands {
 
+  /**
+   * BYTES.
+   */
   private static final Map<String, byte[]> BYTES = new HashMap<String, byte[]>();
 
+  /**
+   * CHANNELS.
+   */
   private static final Map<String, Integer> CHANNELS = new HashMap<String, Integer>();
 
+  /**
+   * RELIABLES.
+   */
   private static final Map<String, Boolean> RELIABLES = new HashMap<String, Boolean>();
 
+  /**
+   * TOSERVER_INIT.
+   */
   public static final String TOSERVER_INIT = "TOSERVER_INIT";
 
+  /**
+   * TOSERVER_INIT_LEGACY.
+   */
   public static final String TOSERVER_INIT_LEGACY = "TOSERVER_INIT_LEGACY";
 
+  /**
+   * TOSERVER_INIT2.
+   */
   public static final String TOSERVER_INIT2 = "TOSERVER_INIT2";
 
+  /**
+   * TOSERVER_PLAYERPOS.
+   */
   public static final String TOSERVER_PLAYERPOS = "TOSERVER_PLAYERPOS";
 
+  /**
+   * TOSERVER_GOTBLOCKS.
+   */
   public static final String TOSERVER_GOTBLOCKS = "TOSERVER_GOTBLOCKS";
 
+  /**
+   * TOSERVER_DELETEDBLOCKS.
+   */
   public static final String TOSERVER_DELETEDBLOCKS = "TOSERVER_DELETEDBLOCKS";
 
+  /**
+   * TOSERVER_CLICK_OBJECT.
+   */
   public static final String TOSERVER_CLICK_OBJECT = "TOSERVER_CLICK_OBJECT";
 
+  /**
+   * TOSERVER_GROUND_ACTION.
+   */
   public static final String TOSERVER_GROUND_ACTION = "TOSERVER_GROUND_ACTION";
 
+  /**
+   * TOSERVER_RELEASE.
+   */
   public static final String TOSERVER_RELEASE = "TOSERVER_RELEASE";
 
+  /**
+   * TOSERVER_SIGNTEXT.
+   */
   public static final String TOSERVER_SIGNTEXT = "TOSERVER_SIGNTEXT";
 
+  /**
+   * TOSERVER_INVENTORY_ACTION.
+   */
   public static final String TOSERVER_INVENTORY_ACTION = "TOSERVER_INVENTORY_ACTION";
 
+  /**
+   * TOSERVER_CHAT_MESSAGE.
+   */
   public static final String TOSERVER_CHAT_MESSAGE = "TOSERVER_CHAT_MESSAGE";
 
+  /**
+   * TOSERVER_SIGNNODETEXT.
+   */
   public static final String TOSERVER_SIGNNODETEXT = "TOSERVER_SIGNNODETEXT";
 
+  /**
+   * TOSERVER_CLICK_ACTIVEOBJECT.
+   */
   public static final String TOSERVER_CLICK_ACTIVEOBJECT = "TOSERVER_CLICK_ACTIVEOBJECT";
 
+  /**
+   * TOSERVER_DAMAGE.
+   */
   public static final String TOSERVER_DAMAGE = "TOSERVER_DAMAGE";
 
+  /**
+   * TOSERVER_PASSWORD_LEGACY.
+   */
   public static final String TOSERVER_PASSWORD_LEGACY = "TOSERVER_PASSWORD_LEGACY";
 
+  /**
+   * TOSERVER_PLAYERITEM.
+   */
   public static final String TOSERVER_PLAYERITEM = "TOSERVER_PLAYERITEM";
 
+  /**
+   * TOSERVER_RESPAWN.
+   */
   public static final String TOSERVER_RESPAWN = "TOSERVER_RESPAWN";
 
+  /**
+   * TOSERVER_INTERACT.
+   */
   public static final String TOSERVER_INTERACT = "TOSERVER_INTERACT";
 
+  /**
+   * TOSERVER_REMOVED_SOUNDS.
+   */
   public static final String TOSERVER_REMOVED_SOUNDS = "TOSERVER_REMOVED_SOUNDS";
 
+  /**
+   * TOSERVER_NODEMETA_FIELDS.
+   */
   public static final String TOSERVER_NODEMETA_FIELDS = "TOSERVER_NODEMETA_FIELDS";
 
+  /**
+   * TOSERVER_INVENTORY_FIELDS.
+   */
   public static final String TOSERVER_INVENTORY_FIELDS = "TOSERVER_INVENTORY_FIELDS";
 
+  /**
+   * TOSERVER_PASSWORD.
+   */
   public static final String TOSERVER_PASSWORD = "TOSERVER_PASSWORD";
 
+  /**
+   * TOSERVER_REQUEST_MEDIA.
+   */
   public static final String TOSERVER_REQUEST_MEDIA = "TOSERVER_REQUEST_MEDIA";
 
+  /**
+   * TOSERVER_RECEIVED_MEDIA.
+   */
   public static final String TOSERVER_RECEIVED_MEDIA = "TOSERVER_RECEIVED_MEDIA";
 
+  /**
+   * TOSERVER_BREATH.
+   */
   public static final String TOSERVER_BREATH = "TOSERVER_BREATH";
 
+  /**
+   * TOSERVER_CLIENT_READY.
+   */
   public static final String TOSERVER_CLIENT_READY = "TOSERVER_CLIENT_READY";
 
   static {
@@ -160,7 +250,9 @@ public final class ServerCommands {
 
   /**
    * getServerCommand.
+   * <p>
    * @param serverCommand String
+   * <p>
    * @return ServerCommand
    */
   public static ServerCommand getServerCommand(final String serverCommand) {

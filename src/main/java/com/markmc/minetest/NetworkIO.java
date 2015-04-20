@@ -15,18 +15,39 @@ import java.nio.ByteBuffer;
  */
 public final class NetworkIO {
 
+  /**
+   * RECEIVED_BUFFER_SIZE.
+   */
   private static final int RECEIVED_BUFFER_SIZE = 1024;
 
+  /**
+   * TIMEOUT.
+   */
   private static final int TIMEOUT = 10 * 1000;
 
+  /**
+   * host.
+   */
   private String host;
 
+  /**
+   * port.
+   */
   private int port;
 
+  /**
+   * socket.
+   */
   private DatagramSocket socket;
 
+  /**
+   * receiveData.
+   */
   private byte[] receiveData;
 
+  /**
+   * receivePacket.
+   */
   private DatagramPacket receivePacket;
 
   /**
