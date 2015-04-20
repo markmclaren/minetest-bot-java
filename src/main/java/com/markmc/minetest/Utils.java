@@ -1,8 +1,9 @@
 package com.markmc.minetest;
 
-import com.google.common.io.BaseEncoding;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+
+import com.google.common.io.BaseEncoding;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
@@ -12,11 +13,11 @@ import org.apache.commons.codec.binary.Hex;
  */
 public class Utils {
 
-    public static float toFloat(byte[] b) {
+    public static float toFloat(final byte[] b) {
         return ByteBuffer.wrap(b).getFloat();
     }
 
-    public static ByteBuffer getByteBuffer(String hex) {
+    public static ByteBuffer getByteBuffer(final String hex) {
         try {
             return ByteBuffer.wrap(Hex.decodeHex(hex.toCharArray()));
         } catch (DecoderException ex) {
@@ -25,23 +26,23 @@ public class Utils {
         return null;
     }
 
-    public static String toString(byte[] b) {
+    public static String toString(final byte[] b) {
         return Hex.encodeHexString(b);
     }
 
-    public static int toInteger(byte[] b) {
+    public static int toInteger(final byte[] b) {
         return new BigInteger(BaseEncoding.base16().encode(b), 16).intValue();
     }
 
-    public static boolean isEqual(byte[] b1, byte[] b2) {
+    public static boolean isEqual(final byte[] b1, final byte[] b2) {
         return ByteBuffer.wrap(b1).equals(ByteBuffer.wrap(b2));
     }
 
-    public static byte[] makeByteArray(byte[] v, int size) {
+    public static byte[] makeByteArray(final byte[] v, final int size) {
         return ByteBuffer.allocate(size).put(v).array();
     }
 
-    public static byte[] getByteArray(String hex) {
+    public static byte[] getByteArray(final String hex) {
         try {
             return Hex.decodeHex(hex.toCharArray());
         } catch (DecoderException ex) {
@@ -49,24 +50,24 @@ public class Utils {
         return null;
     }
 
-    public static byte[] pop(ByteBuffer bbuff, int pop) {
+    public static byte[] pop(final ByteBuffer bbuff, final int pop) {
         byte[] dest = new byte[pop];
         bbuff.get(dest, 0, pop);
         return dest;
     }
 
     // U8 = 1 byte
-    public static byte[] U8(int v) {
+    public static byte[] U8(final int v) {
         return ByteBuffer.allocate(1).put((byte) v).array();
     }
 
     // U16 = 2 bytes
-    public static byte[] U16(int v) {
+    public static byte[] U16(final int v) {
         return ByteBuffer.allocate(2).putShort((short) v).array();
     }
 
     // U32 = 4 bytes
-    public static byte[] U32(int v) {
+    public static byte[] U32(final int v) {
         return ByteBuffer.allocate(4).putInt(v).array();
     }
 
