@@ -4,16 +4,16 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.markmc.minetest.Utils.getByteArray;
 import static com.markmc.minetest.Utils.u16;
 import static com.markmc.minetest.Utils.u8;
-import static com.markmc.minetest.Utils.getByteArray;
 
 /**
  * Constants.
  * <p>
  * @author markmc
  */
-public class Constants {
+public final class Constants {
 
   public static final int SEQNUM_INITIAL = 65500;
 

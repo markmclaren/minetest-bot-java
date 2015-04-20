@@ -12,7 +12,7 @@ import org.apache.commons.codec.binary.Hex;
  * <p>
  * @author markmc
  */
-public class Utils {
+public final class Utils {
 
   private static final int ONE_BYTE = 1;
   private static final int TWO_BYTES = 2;

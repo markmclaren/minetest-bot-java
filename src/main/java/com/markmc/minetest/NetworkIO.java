@@ -15,9 +15,9 @@ import java.nio.ByteBuffer;
  */
 public class NetworkIO {
 
-  private final static int RECEIVED_BUFFER_SIZE = 1024;
+  private static final int RECEIVED_BUFFER_SIZE = 1024;
 
-  private final static int TIMEOUT = 10 * 1000;
+  private static final int TIMEOUT = 10 * 1000;
 
   private String host;
 
