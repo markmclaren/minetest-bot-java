@@ -2,4 +2,4 @@
 
 Work in progress
 
-(multiplebots.png) "Several minetest java bots hanging in the air"
+[!](multiplebots.png) "Several minetest java bots hanging in the air"
