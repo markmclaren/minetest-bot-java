@@ -5,8 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.markmc.minetest.MinetestBot.State;
-
 import static com.markmc.minetest.Constants.EIGHT_BYTES;
 import static com.markmc.minetest.Constants.FOUR_BYTES;
 import static com.markmc.minetest.Constants.ONE_BYTE;
@@ -69,9 +67,9 @@ public class ServiceHandler {
           byte[] mapSeed = Utils.pop(data, EIGHT_BYTES);
           byte[] recommendedSendInterval = Utils.pop(data, FOUR_BYTES);
           //System.out.println(toFloat(recommendedSendInterval));
-          MinetestBot.setState(State.InitSent);
+          MinetestBot.setState(ClientState.InitSent);
           MinetestBot.toserverInit2();
-          MinetestBot.setState(State.InitDone);
+          MinetestBot.setState(ClientState.InitDone);
           init2Sent = Boolean.TRUE;
         }
       }
@@ -113,7 +111,7 @@ public class ServiceHandler {
         }
         if (!clientReadySent) {
           MinetestBot.toserverClientReady();
-          MinetestBot.setState(State.Active);
+          MinetestBot.setState(ClientState.Active);
           clientReadySent = Boolean.TRUE;
         }
                 //System.out.println(toInteger(time));
