@@ -21,7 +21,7 @@ public class Bot {
 
   private ClientState state;
 
-  String botName;
+  private final String botName;
 
   public Bot(final String serverIp, final String botName) {
     this.network = new NetworkIO(serverIp, DEFAULT_SERVER_PORT);
