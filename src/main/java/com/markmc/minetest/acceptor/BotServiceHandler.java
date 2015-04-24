@@ -1,14 +1,18 @@
-package com.markmc.minetest;
+package com.markmc.minetest.acceptor;
 
+import com.markmc.minetest.connector.ClientState;
+import com.markmc.minetest.bot.Bot;
+import com.markmc.minetest.connector.Connect;
+import com.markmc.minetest.utils.Utils;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.markmc.minetest.Constants.EIGHT_BYTES;
-import static com.markmc.minetest.Constants.FOUR_BYTES;
-import static com.markmc.minetest.Constants.ONE_BYTE;
-import static com.markmc.minetest.Constants.TWO_BYTES;
+import static com.markmc.minetest.utils.Constants.EIGHT_BYTES;
+import static com.markmc.minetest.utils.Constants.FOUR_BYTES;
+import static com.markmc.minetest.utils.Constants.ONE_BYTE;
+import static com.markmc.minetest.utils.Constants.TWO_BYTES;
 
 /**
  * ServiceHandler.
@@ -16,18 +20,19 @@ import static com.markmc.minetest.Constants.TWO_BYTES;
  * <p>
  * @author markmc
  */
-public class ServiceHandler {
+public class BotServiceHandler {
 
-  private static Boolean init2Sent = Boolean.FALSE;
+  private Boolean init2Sent = Boolean.FALSE;
 
-  private static Boolean receivedMediaSent = Boolean.FALSE;
+  private Boolean receivedMediaSent = Boolean.FALSE;
 
-  private static Boolean clientReadySent = Boolean.FALSE;
+  private Boolean clientReadySent = Boolean.FALSE;
 
-  public static final Map<ByteBuffer, CommandHandler> CMD_HANDLER
+  public final Map<ByteBuffer, CommandHandler> CMD_HANDLER
     = new HashMap<ByteBuffer, CommandHandler>();
 
-  static {
+  public BotServiceHandler(final Bot bot, final Connect connect) {
+  
     CMD_HANDLER.put(Utils.getByteBuffer("0002"), new AbstractCommandHandler() {
 
       public String getName() {
@@ -55,7 +60,7 @@ public class ServiceHandler {
       }
 
       @Override
-      public void run(final ByteBuffer data) {
+      public void process(final ByteBuffer data) {
         if (!init2Sent) {
           byte[] version = Utils.pop(data, ONE_BYTE);
           byte[] posX = Utils.pop(data, TWO_BYTES);
@@ -67,9 +72,9 @@ public class ServiceHandler {
           byte[] mapSeed = Utils.pop(data, EIGHT_BYTES);
           byte[] recommendedSendInterval = Utils.pop(data, FOUR_BYTES);
           //System.out.println(toFloat(recommendedSendInterval));
-          MinetestBot.setState(ClientState.InitSent);
-          MinetestBot.toserverInit2();
-          MinetestBot.setState(ClientState.InitDone);
+          bot.setState(ClientState.InitSent);          
+          connect.toserverInit2();
+          bot.setState(ClientState.InitDone);
           init2Sent = Boolean.TRUE;
         }
       }
@@ -102,16 +107,16 @@ public class ServiceHandler {
       }
 
       @Override
-      public void run(final ByteBuffer data) {
+      public void process(final ByteBuffer data) {
         byte[] time = Utils.pop(data, TWO_BYTES);
         byte[] timeSpeed = Utils.pop(data, FOUR_BYTES);
         if (!receivedMediaSent) {
-          MinetestBot.toserverMediaRecieved();
+          connect.toserverMediaRecieved();
           receivedMediaSent = Boolean.TRUE;
         }
         if (!clientReadySent) {
-          MinetestBot.toserverClientReady();
-          MinetestBot.setState(ClientState.Active);
+          connect.toserverClientReady();
+          bot.setState(ClientState.Active);
           clientReadySent = Boolean.TRUE;
         }
                 //System.out.println(toInteger(time));
@@ -124,7 +129,7 @@ public class ServiceHandler {
       }
 
       @Override
-      public void run(final ByteBuffer data) {
+      public void process(final ByteBuffer data) {
         byte[] length = Utils.pop(data, 2);
         int size = Utils.toInteger(length);
         size = size * 2; // 2 bytes per character
@@ -162,7 +167,7 @@ public class ServiceHandler {
       }
 
       @Override
-      public void run(final ByteBuffer data) {
+      public void process(final ByteBuffer data) {
         byte[] posX = Utils.pop(data, TWO_BYTES);
         byte[] posY = Utils.pop(data, TWO_BYTES);
         byte[] posZ = Utils.pop(data, TWO_BYTES);

@@ -1,4 +1,4 @@
-package com.markmc.minetest;
+package com.markmc.minetest.connector;
 
 /**
  * ServerCommand.

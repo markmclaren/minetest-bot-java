@@ -1,4 +1,4 @@
-package com.markmc.minetest;
+package com.markmc.minetest.acceptor;
 
 import java.nio.ByteBuffer;
 
@@ -17,10 +17,10 @@ public interface CommandHandler {
   String getName();
 
   /**
-   * run. Method that processes the data returned by this command.
+   * process. Method that processes the data returned by this command.
    * <p>
    * @param data ByteBuffer
    */
-  void run(ByteBuffer data);
+  void process(ByteBuffer data);
 
 }

@@ -1,4 +1,4 @@
-package com.markmc.minetest;
+package com.markmc.minetest.utils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -28,12 +28,12 @@ public final class NetworkIO {
   /**
    * host.
    */
-  private String host;
+  private final String host;
 
   /**
    * port.
    */
-  private int port;
+  private final int port;
 
   /**
    * socket.
@@ -97,5 +97,5 @@ public final class NetworkIO {
     } catch (IOException ex) {
     }
   }
-
+  
 }

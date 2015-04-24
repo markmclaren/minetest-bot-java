@@ -1,8 +1,8 @@
-package com.markmc.minetest;
+package com.markmc.minetest.connector;
 
 /**
  * ClientState.
- * @author Mark McLaren (mark.mclaren@bristol.ac.uk)
+ * @author markmc
  */
 public enum ClientState {
 

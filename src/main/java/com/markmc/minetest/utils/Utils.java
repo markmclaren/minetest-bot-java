@@ -1,4 +1,4 @@
-package com.markmc.minetest;
+package com.markmc.minetest.utils;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -7,9 +7,9 @@ import com.google.common.io.BaseEncoding;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
-import static com.markmc.minetest.Constants.FOUR_BYTES;
-import static com.markmc.minetest.Constants.ONE_BYTE;
-import static com.markmc.minetest.Constants.TWO_BYTES;
+import static com.markmc.minetest.utils.Constants.FOUR_BYTES;
+import static com.markmc.minetest.utils.Constants.ONE_BYTE;
+import static com.markmc.minetest.utils.Constants.TWO_BYTES;
 
 /**
  * Utils.

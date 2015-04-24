@@ -1,16 +1,18 @@
-package com.markmc.minetest;
+package com.markmc.minetest.bot;
 
-import static com.markmc.minetest.Constants.DEFAULT_SERVER_PORT;
-import static com.markmc.minetest.Constants.PEER_ID_INEXISTENT;
-import static com.markmc.minetest.Constants.SEQNUM_INITIAL;
+import com.markmc.minetest.connector.ClientState;
+import com.markmc.minetest.utils.NetworkIO;
+import static com.markmc.minetest.utils.Constants.DEFAULT_SERVER_PORT;
+import static com.markmc.minetest.utils.Constants.PEER_ID_INEXISTENT;
+import static com.markmc.minetest.utils.Constants.SEQNUM_INITIAL;
 
 /**
  * Bot.
- * @author Mark McLaren (mark.mclaren@bristol.ac.uk)
+ * @author markmc
  */
 public class Bot {
 
-  private NetworkIO network;
+  private final NetworkIO network;
 
   private int[] outgoingSeqnums
     = new int[] { SEQNUM_INITIAL, SEQNUM_INITIAL, SEQNUM_INITIAL };
@@ -22,7 +24,7 @@ public class Bot {
   String botName;
 
   public Bot(final String serverIp, final String botName) {
-    network = new NetworkIO(serverIp, DEFAULT_SERVER_PORT);
+    this.network = new NetworkIO(serverIp, DEFAULT_SERVER_PORT);
     this.botName = botName;
   }
 
@@ -49,5 +51,14 @@ public class Bot {
   public String getBotname(){
     return this.botName;
   }
+  
+  public ClientState getState(){
+      return this.state;
+  }
+  
+  public void setState(final ClientState state){
+      this.state = state;
+  }
+  
 
 }
