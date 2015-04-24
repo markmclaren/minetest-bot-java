@@ -18,7 +18,7 @@ public final class NetworkIO {
   /**
    * RECEIVED_BUFFER_SIZE.
    */
-  private static final int RECEIVED_BUFFER_SIZE = 1024;
+  private static final int RECEIVED_BUFFER_SIZE = 512;
 
   /**
    * TIMEOUT.
